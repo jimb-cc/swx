@@ -18,7 +18,7 @@ DB = Mongo::Client.new(opts[:host], database: opts[:database])
 DB[opts[:collection]].indexes.create_one(
     { time_tag: 1, energy: 1},
     name: 'ix_tt_e',
-    unique: true
+#    unique: true
 )
 
 DB[opts[:collection]].indexes.each do |i|
@@ -32,14 +32,19 @@ def pushData(db,coll,url)
 
     count = 0
     response.parsed_response.each do |doc,i|
-        ts = doc["time_tag"]
-        fixedTS = DateTime.parse(doc["time_tag"])
-        doc[:"time_tag"] = fixedTS
-        result = db[coll].insert_one(doc)
-        putc "."
-        count = count +1
+
+        fixedTS = DateTime.parse(doc["time_tag"]).to_time
+        doc["time_tag"] = fixedTS
+        numDocs = db[coll].find(:time_tag => doc["time_tag"],:energy => doc["energy"]).count_documents
+        if  numDocs == 0
+            putc "!"
+            result = db[coll].insert_one(doc)
+            count = count +1
+        else
+            putc "."     
+        end
     rescue
-        putc "x"    
+       putc "x"    
     end
     puts "\nInserted #{count} new measurements from #{response.parsed_response.length} results"
 end
