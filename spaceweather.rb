@@ -5,7 +5,6 @@
 require 'httparty'
 require 'mongo'
 require 'slop'
-require 'awesome_print'
 
 opts = Slop.parse do |o|
   o.string  '-h', '--host', 'the URI for the MongoDB cluster (default: localhost)', default: 'mongodb://localhost'
@@ -27,7 +26,7 @@ DB[opts[:collection]].indexes.create_one(
 )
 
 DB[opts[:collection]].indexes.each do |i|
-  ap i
+  puts i
 end
 
 def pushData(db, coll, url)
