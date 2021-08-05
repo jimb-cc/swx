@@ -15,11 +15,6 @@ Mongo::Logger.logger.level = ::Logger::WARN
 puts "Connecting to #{opts[:host]}, and db #{opts[:database]}"
 DB = Mongo::Client.new(opts[:host], database: opts[:database])
 
-
-# Issue an administrative command
-#ap DB.database.command(dbstats: 1)
-
-
 DB[opts[:collection]].indexes.create_one(
     { time_tag: 1, energy: 1},
     name: 'ix_tt_e',
@@ -30,9 +25,8 @@ DB[opts[:collection]].indexes.each do |i|
     ap i
 end
 
-def pushData(db,coll)
+def pushData(db,coll,url)
 
-    url = 'https://services.swpc.noaa.gov/json/goes/primary/xrays-6-hour.json'
     response = HTTParty.get(url)
     response.parsed_response
 
@@ -50,4 +44,4 @@ def pushData(db,coll)
     puts "\nInserted #{count} new measurements from #{response.parsed_response.length} results"
 end
 
-pushData(DB,opts[:collection])    
+pushData(DB,opts[:collection],opts[:url])    
