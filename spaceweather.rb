@@ -18,11 +18,11 @@ Mongo::Logger.logger.level = ::Logger::WARN
 puts "Connecting to #{opts[:host]}, and db #{opts[:database]}"
 DB = Mongo::Client.new(opts[:host], database: opts[:database])
 
-DB[opts[:collection]].indexes.create_one(
-  { time_tag: 1, energy: 1 },
-  name: 'ix_tt_e'
-  #    unique: true
-)
+#DB[opts[:collection]].indexes.create_one(
+#  { time_tag: 1, energy: 1 },
+#  name: 'ix_tt_e'
+#    unique: true
+#)
 
 DB[opts[:collection]].indexes.each do |i|
   puts i
