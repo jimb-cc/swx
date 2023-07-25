@@ -6,4 +6,4 @@ RUN gem install httparty
 RUN gem install slop
 
 ADD spaceweather.rb /home/
-CMD ruby /home/spaceweather.rb -h $DBHOST -c $COLL
+CMD ruby /home/spaceweather.rb -h $DBHOST -c $COLL -s $SLEEP
